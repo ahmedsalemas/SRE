@@ -18,12 +18,19 @@ pipeline {
         stage('Test') {
             steps {
                 dir('api') {
-                    sh 'npm install'
-                    sh 'npm test'
+                    withEnv([
+                        'DB_HOST=host.docker.internal',
+                        'DB_PORT=5432',
+                        'DB_USER=devops',
+                        'DB_PASSWORD=devops',
+                        'DB_NAME=devops_app'
+                    ]) {
+                        sh 'npm install'
+                        sh 'npm test'
+                    }
                 }
             }
         }
-
         stage('Scan') {
             steps {
                 sh "trivy image --severity HIGH,CRITICAL --exit-code 1 ${IMAGE_NAME}:${IMAGE_TAG}"
