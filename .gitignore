@@ -1,0 +1,13 @@
+node_modules/
+.env
+*.log
+terraform/.terraform/
+terraform/.terraform.lock.hcl
+terraform/*.tfstate
+terraform/*.tfstate.backup
+terraform-backend/.terraform/
+terraform-backend/*.tfstate
+terraform-backend/*.tfstate.backup
+.scannerwork/
+api/coverage/
+sonar-scanner-cli-*.zip

@@ -1,0 +1,58 @@
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: devops-app-postgres
+    environment:
+      POSTGRES_USER: devops
+      POSTGRES_PASSWORD: devops
+      POSTGRES_DB: devops_app
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U devops"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build: ./api
+    image: ahmedmasalem/devops-dummy-api:0.1.0
+    container_name: devops-app-api
+    ports:
+      - "3000:3000"
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: devops
+      DB_PASSWORD: devops
+      DB_NAME: devops_app
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+
+  worker:
+    build: ./worker
+    image: ahmedmasalem/devops-dummy-worker:0.1.0
+    container_name: devops-app-worker
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: devops
+      DB_PASSWORD: devops
+      DB_NAME: devops_app
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  pgdata:

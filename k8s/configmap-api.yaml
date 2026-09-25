@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: devops-api-config
+data:
+  DB_HOST: "host.docker.internal"
+  DB_PORT: "5432"
+  DB_NAME: "devops_app"
+  DB_USER: "devops"

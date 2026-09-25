@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: devops-api
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: devops-api
+  template:
+    metadata:
+      labels:
+        app: devops-api
+    spec:
+      containers:
+        - name: api
+          image: ahmedmasalem/devops-dummy-api:0.1.0
+          ports:
+            - containerPort: 3000
+          envFrom:
+            - configMapRef:             #  dumps every key in the ConfigMap in as an env var automatically. Convenient when you want everything
+                name: devops-api-config
+          env:
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:     # pulls one specific key from a Secret, named explicitly.
+                  name: devops-api-secret
+                  key: DB_PASSWORD
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            failureThreshold: 2 
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "64Mi"
+            limits:
+              cpu: "250m"
+              memory: "128Mi"

@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: devops-api-service
+spec:
+  type: ClusterIP     # ClusterIP is the default type of service. It exposes the service on a cluster-internal IP. Choosing this type makes the service only reachable from within the cluster.
+  selector:
+    app: devops-api   # selects the pods that will receive traffic from this service. It must match the labels of the pods in the deployment.
+  ports:
+    - port: 80
+      targetPort: 3000

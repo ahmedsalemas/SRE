@@ -1,0 +1,35 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: require-limits-and-no-latest-tag
+spec:
+  validationFailureAction: Enforce   # Enforce the policy; can also be set to 'audit' to only log violations
+  background: true
+  rules:
+    - name: require-resource-limits
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+      validate:
+        message: "Every container must set CPU and memory resource limits."
+        pattern:    # The pattern specifies that each container in the Pod spec must have defined resource limits for both CPU and memory. The "?*" indicates that any value is acceptable, but the fields must be present.
+          spec:
+            containers:
+              - resources:
+                  limits:
+                    cpu: "?*"   # Any value is acceptable for CPU limit
+                    memory: "?*" # Any value is acceptable for memory limit
+    - name: disallow-latest-tag
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+      validate:
+        message: "Image tag ':latest' is forbidden — use a specific version tag."
+        pattern:
+          spec:
+            containers:
+              - image: "!*:latest"    # The "!*:latest" pattern indicates that the image field must not end with ":latest", enforcing the use of specific version tags for container images.

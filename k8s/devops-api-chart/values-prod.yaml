@@ -1,0 +1,25 @@
+image:
+  repository: ahmedmasalem/devops-dummy-api
+  tag: "0.1.0"
+
+replicaCount: 10
+
+resources:
+  requests:
+    cpu: 500m
+    memory: 256Mi
+  limits:
+    cpu: 250m
+    memory: 128Mi
+
+hpa:
+  minReplicas: 2
+  maxReplicas: 8
+  targetCPUUtilizationPercentage: 50
+
+db:
+  host: "host.docker.internal"
+  port: "5432"
+  name: "devops_app"
+  user: "devops"
+  password: "devops"

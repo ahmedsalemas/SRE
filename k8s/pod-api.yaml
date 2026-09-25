@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: devops-api
+  labels:
+    app: devops-api
+spec:
+  containers:
+    - name: api
+      image: ahmedmasalem/devops-dummy-api:0.1.0
+      ports:
+        - containerPort: 3000
+      env:
+        - name: DB_HOST
+          value: "host.docker.internal"
+        - name: DB_PORT
+          value: "5432"
+        - name: DB_USER
+          value: "devops"
+        - name: DB_PASSWORD
+          value: "devops"
+        - name: DB_NAME
+          value: "devops_app"
