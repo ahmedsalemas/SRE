@@ -1,5 +1,5 @@
 pipeline {
-    agent any  # This means the pipeline can run on any available agent.
+    agent any  // This means the pipeline can run on any available agent.
 
     environment {               // Define environment variables for the pipeline
         IMAGE_NAME = "ahmedmasalem/devops-dummy-api"    // The name of the Docker image to be built and pushed
