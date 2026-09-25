@@ -1,15 +1,15 @@
 pipeline {
     agent any  # This means the pipeline can run on any available agent.
 
-    environment {               # Define environment variables for the pipeline
-        IMAGE_NAME = "ahmedmasalem/devops-dummy-api"    # The name of the Docker image to be built and pushed
-        IMAGE_TAG  = "${env.GIT_COMMIT.take(7)}"    # Use the first 7 characters of the Git commit hash as the image tag
+    environment {               // Define environment variables for the pipeline
+        IMAGE_NAME = "ahmedmasalem/devops-dummy-api"    // The name of the Docker image to be built and pushed
+        IMAGE_TAG  = "${env.GIT_COMMIT.take(7)}"    // Use the first 7 characters of the Git commit hash as the image tag
     }
 
     stages {
         stage('Build') {
             steps {
-                dir('api') {  # Change the working directory to 'api' where the Dockerfile is located
+                dir('api') {  // Change the working directory to 'api' where the Dockerfile is located
                     sh "docker build -t ${IMAGE_NAME}:${IMAGE_TAG} ."
                 }
             }
