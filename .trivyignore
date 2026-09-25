@@ -1,0 +1,5 @@
+# Documented exceptions — see SECURITY-NOTES.md
+# No fixed version available from Alpine upstream as of 2026-09-25.
+# Re-evaluate on next Trivy scan; remove once Alpine ships a patch.
+CVE-2026-14456
+CVE-2026-45447
