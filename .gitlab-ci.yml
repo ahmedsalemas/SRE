@@ -1,0 +1,45 @@
+stages:
+  - build
+  - test
+  - scan
+  - push
+  - update-manifest
+
+variables:
+  IMAGE_NAME: "ahmedmasalem/devops-dummy-api"
+  IMAGE_TAG: "$CI_COMMIT_SHORT_SHA"
+
+build:
+  stage: build
+  script:
+    - cd api
+    - docker build -t $IMAGE_NAME:$IMAGE_TAG .
+
+test:
+  stage: test
+  variables:
+    DB_HOST: "host.docker.internal"
+    DB_PORT: "5432"
+    DB_USER: "devops"
+    DB_PASSWORD: "devops"
+    DB_NAME: "devops_app"
+  script:
+    - cd api
+    - npm install
+    - npm test
+
+scan:
+  stage: scan
+  script:
+    - trivy image --severity HIGH,CRITICAL --exit-code 1 --ignorefile .trivyignore $IMAGE_NAME:$IMAGE_TAG
+
+push:
+  stage: push
+  script:
+    - echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+    - docker push $IMAGE_NAME:$IMAGE_TAG
+
+update-manifest:
+  stage: update-manifest
+  script:
+    - echo "Would update k8s manifest repo with new tag $IMAGE_TAG"
