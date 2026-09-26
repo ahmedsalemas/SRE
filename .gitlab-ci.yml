@@ -12,7 +12,7 @@ services:
 
 variables:
   DOCKER_HOST: tcp://docker:2375
-  DOCKER_TLS_CERTS_DIR: ""
+  DOCKER_TLS_CERTDIR: ""
   IMAGE_NAME: "ahmedmasalem/devops-dummy-api"
   IMAGE_TAG: "$CI_COMMIT_SHORT_SHA"
 
