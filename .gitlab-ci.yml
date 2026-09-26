@@ -24,6 +24,7 @@ build:
 
 test:
   stage: test
+  image: node:20-alpine
   variables:
     DB_HOST: "host.docker.internal"
     DB_PORT: "5432"
@@ -37,6 +38,9 @@ test:
 
 scan:
   stage: scan
+  image:
+    name: aquasec/trivy:latest
+    entrypoint: [""]
   script:
     - trivy image --severity HIGH,CRITICAL --exit-code 1 --ignorefile .trivyignore $IMAGE_NAME:$IMAGE_TAG
 
