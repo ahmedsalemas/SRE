@@ -5,7 +5,14 @@ stages:
   - push
   - update-manifest
 
+image: docker:24.0.5
+
+services:
+  - docker:24.0.5-dind
+
 variables:
+  DOCKER_HOST: tcp://docker:2375
+  DOCKER_TLS_CERTS_DIR: ""
   IMAGE_NAME: "ahmedmasalem/devops-dummy-api"
   IMAGE_TAG: "$CI_COMMIT_SHORT_SHA"
 
