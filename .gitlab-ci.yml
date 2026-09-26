@@ -21,6 +21,11 @@ build:
   script:
     - cd api
     - docker build -t $IMAGE_NAME:$IMAGE_TAG .
+    - docker save -o ../image.tar $IMAGE_NAME:$IMAGE_TAG
+  artifacts:
+    paths:
+      - image.tar
+    expire_in: 1 hour
 
 test:
   stage: test
@@ -42,11 +47,12 @@ scan:
     name: aquasec/trivy:latest
     entrypoint: [""]
   script:
-    - trivy image --severity HIGH,CRITICAL --exit-code 1 --ignorefile .trivyignore $IMAGE_NAME:$IMAGE_TAG
+    - trivy image --input image.tar --severity HIGH,CRITICAL --exit-code 1 --ignorefile .trivyignore
 
 push:
   stage: push
   script:
+    - docker load -i image.tar
     - echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
     - docker push $IMAGE_NAME:$IMAGE_TAG
 
