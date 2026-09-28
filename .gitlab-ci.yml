@@ -47,7 +47,7 @@ test:
     DB_NAME: devops_app
   before_script:
     - apk add --no-cache postgresql-client
-    - PGPASSWORD=devops psql -h postgres -U devops -d devops_app -f ../db/init.sql
+    - PGPASSWORD=devops psql -h postgres -U devops -d devops_app -f "$CI_PROJECT_DIR/db/init.sql"
   script:
     - cd api
     - npm install
