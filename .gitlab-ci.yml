@@ -33,12 +33,21 @@ build:
 test:
   stage: test
   image: node:20-alpine
+  services:
+    - name: postgres:16-alpine
+      alias: postgres
   variables:
-    DB_HOST: "host.docker.internal"
+    POSTGRES_USER: devops
+    POSTGRES_PASSWORD: devops
+    POSTGRES_DB: devops_app
+    DB_HOST: postgres
     DB_PORT: "5432"
-    DB_USER: "devops"
-    DB_PASSWORD: "devops"
-    DB_NAME: "devops_app"
+    DB_USER: devops
+    DB_PASSWORD: devops
+    DB_NAME: devops_app
+  before_script:
+    - apk add --no-cache postgresql-client
+    - PGPASSWORD=devops psql -h postgres -U devops -d devops_app -f ../db/init.sql
   script:
     - cd api
     - npm install
