@@ -8,13 +8,16 @@ stages:
 image: docker:24.0.5
 
 services:
-  - docker:24.0.5-dind
+  - name: docker:24.0.5-dind
+    command: ["--insecure-registry=host.docker.internal:8082"]
+
 
 variables:
   DOCKER_HOST: tcp://docker:2375
   DOCKER_TLS_CERTDIR: ""
-  IMAGE_NAME: "ahmedmasalem/devops-dummy-api"
-  IMAGE_TAG: "$CI_COMMIT_SHORT_SHA"
+  NEXUS_REGISTRY: "host.docker.internal:8082"
+  IMAGE_NAME: "$NEXUS_REGISTRY/devops-dummy-api"
+  IMAGE_TAG: "${CI_COMMIT_TAG:-$CI_COMMIT_SHORT_SHA}"
 
 build:
   stage: build
@@ -53,7 +56,7 @@ push:
   stage: push
   script:
     - docker load -i image.tar
-    - echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+    - echo "$NEXUS_PASS" | docker login $NEXUS_REGISTRY -u "$NEXUS_USER" --password-stdin
     - docker push $IMAGE_NAME:$IMAGE_TAG
 
 update-manifest:
