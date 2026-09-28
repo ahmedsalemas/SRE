@@ -17,11 +17,11 @@ variables:
   DOCKER_TLS_CERTDIR: ""
   NEXUS_REGISTRY: "host.docker.internal:8082"
   IMAGE_NAME: "$NEXUS_REGISTRY/devops-dummy-api"
-  IMAGE_TAG: "${CI_COMMIT_TAG:-$CI_COMMIT_SHORT_SHA}"
 
 build:
   stage: build
   script:
+    - export IMAGE_TAG="${CI_COMMIT_TAG:-$CI_COMMIT_SHORT_SHA}"
     - cd api
     - docker build -t $IMAGE_NAME:$IMAGE_TAG .
     - docker save -o ../image.tar $IMAGE_NAME:$IMAGE_TAG
@@ -55,6 +55,7 @@ scan:
 push:
   stage: push
   script:
+    - export IMAGE_TAG="${CI_COMMIT_TAG:-$CI_COMMIT_SHORT_SHA}"
     - docker load -i image.tar
     - echo "$NEXUS_PASS" | docker login $NEXUS_REGISTRY -u "$NEXUS_USER" --password-stdin
     - docker push $IMAGE_NAME:$IMAGE_TAG
