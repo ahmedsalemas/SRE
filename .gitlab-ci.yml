@@ -72,4 +72,12 @@ push:
 update-manifest:
   stage: update-manifest
   script:
-    - echo "Would update k8s manifest repo with new tag $IMAGE_TAG"
+    - export IMAGE_TAG="${CI_COMMIT_TAG:-$CI_COMMIT_SHORT_SHA}"
+    - apk add --no-cache git sed
+    - git config user.email "ci@devops-app.local"
+    - git config user.name "GitLab CI"
+    - git remote set-url origin "https://oauth2:${GITLAB_PUSH_TOKEN}@gitlab.com/ahmedsalem.me.as/sre.git"
+    - sed -i "s/tag: .*/tag: \"$IMAGE_TAG\"/" k8s/devops-api-chart/values.yaml
+    - git add k8s/devops-api-chart/values.yaml
+    - 'git commit -m "ci: bump devops-api image tag to $IMAGE_TAG [skip ci]" || echo "No changes to commit"'
+    - git push origin HEAD:main
