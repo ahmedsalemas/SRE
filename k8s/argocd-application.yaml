@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default         # The Argo CD project to which this application belongs
   source:                   # The source of the application, which is a Git repository in this case
-    repoURL: https://github.com/ahmedsalemas/SRE.git
+    repoURL: https://gitlab.com/ahmedsalem.me.as/sre.git
     targetRevision: main
     path: k8s/devops-api-chart
     helm:
