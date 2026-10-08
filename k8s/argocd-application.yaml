@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: devops-api
+  namespace: argocd
+spec:
+  project: default         # The Argo CD project to which this application belongs
+  source:                   # The source of the application, which is a Git repository in this case
+    repoURL: https://github.com/ahmedsalemas/SRE.git
+    targetRevision: main
+    path: k8s/devops-api-chart
+    helm:
+      valueFiles:
+        - values.yaml
+  destination:             # The destination cluster and namespace where the application will be deployed
+    server: https://kubernetes.default.svc
+    namespace: default
+  syncPolicy:                  # The synchronization policy for the application, which is set to automated in this case
+    automated:
+      prune: true                # Automatically delete resources that are no longer defined in the Git repository
+      selfHeal: true               # Automatically correct any drift from the desired state
+    syncOptions:                     # Additional options for the synchronization process
+      - CreateNamespace=true             # Automatically create the destination namespace if it doesn't exist
