@@ -3,33 +3,43 @@ kind: ClusterPolicy
 metadata:
   name: require-limits-and-no-latest-tag
 spec:
-  validationFailureAction: Enforce   # Enforce the policy; can also be set to 'audit' to only log violations
+  validationFailureAction: Enforce            # Enforce the policy and block non-compliant resources
   background: true
   rules:
-    - name: require-resource-limits
+    - name: require-resource-limits           # Require CPU and memory resource limits for all containers in a Pod
       match:
         any:
           - resources:
               kinds:
                 - Pod
+      exclude:                # Exclude the argocd namespace from this rule
+        any:
+          - resources:
+              namespaces:
+                - argocd
       validate:
         message: "Every container must set CPU and memory resource limits."
-        pattern:    # The pattern specifies that each container in the Pod spec must have defined resource limits for both CPU and memory. The "?*" indicates that any value is acceptable, but the fields must be present.
+        pattern:
           spec:
             containers:
               - resources:
                   limits:
-                    cpu: "?*"   # Any value is acceptable for CPU limit
-                    memory: "?*" # Any value is acceptable for memory limit
+                    cpu: "?*"
+                    memory: "?*"
     - name: disallow-latest-tag
       match:
         any:
           - resources:
               kinds:
                 - Pod
+      exclude:
+        any:
+          - resources:
+              namespaces:
+                - argocd
       validate:
         message: "Image tag ':latest' is forbidden — use a specific version tag."
         pattern:
           spec:
             containers:
-              - image: "!*:latest"    # The "!*:latest" pattern indicates that the image field must not end with ":latest", enforcing the use of specific version tags for container images.
+              - image: "!*:latest"
