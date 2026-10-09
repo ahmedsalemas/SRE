@@ -1,12 +1,20 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: argoproj.io/v1alpha1     # was: apps/v1
+kind: Rollout                        # was: Deployment
 metadata:
   name: devops-api
 spec:
   replicas: {{ .Values.replicaCount }}
+  revisionHistoryLimit: 3
   selector:
     matchLabels:
       app: devops-api
+  strategy:                          # new block
+    canary:
+      steps:
+        - setWeight: 20              # send ~20% to the new version
+        - pause: {}                  # wait here until a human promotes
+        - setWeight: 60
+        - pause: {duration: 30s}     # then continue on its own
   template:
     metadata:
       labels:
