@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Dummy API for hands-on DevOps curriculum",
   "main": "src/index.js",
+  "overrides": {
+      "proxy-addr": "2.0.8"
+  },
   "scripts": {
     "start": "node src/index.js",
     "test": "jest --detectOpenHandles --forceExit",
