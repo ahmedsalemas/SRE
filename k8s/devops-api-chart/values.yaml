@@ -18,7 +18,7 @@ hpa:
   targetCPUUtilizationPercentage: 50
 
 db:
-  host: "host.docker.internal"
+  host: "postgres-demo-service"
   port: "5432"
   name: "devops_app"
   user: "devops"
