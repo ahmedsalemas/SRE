@@ -17,6 +17,7 @@ spec:
           - resources:
               namespaces:
                 - argocd
+                - argo-rollouts
       validate:
         message: "Every container must set CPU and memory resource limits."
         pattern:
@@ -37,6 +38,7 @@ spec:
           - resources:
               namespaces:
                 - argocd
+                - argo-rollouts
       validate:
         message: "Image tag ':latest' is forbidden — use a specific version tag."
         pattern:
