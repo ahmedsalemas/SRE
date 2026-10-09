@@ -12,6 +12,8 @@ spec:
       labels:
         app: devops-api
     spec:
+      imagePullSecrets:
+        - name: nexus-registry-secret
       containers:
         - name: api
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
