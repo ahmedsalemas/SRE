@@ -8,12 +8,13 @@ spec:
   selector:
     matchLabels:
       app: devops-api
-  strategy:
-    blueGreen:
-      activeService: devops-api-service
-      previewService: devops-api-preview
-      autoPromotionEnabled: false
-      scaleDownDelaySeconds: 60
+  strategy:                          # new block
+    canary:
+      steps:
+        - setWeight: 20              # send ~20% to the new version
+        - pause: {}                  # wait here until a human promotes
+        - setWeight: 60
+        - pause: {duration: 30s}     # then continue on its own
   template:
     metadata:
       labels:
