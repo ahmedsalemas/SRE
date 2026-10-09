@@ -1,6 +1,6 @@
 image:
   repository: host.docker.internal:8082/devops-dummy-api
-  tag: "a3713ca1"
+  tag: "aa00501e"
 
 replicaCount: 3
 
