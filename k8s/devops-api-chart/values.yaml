@@ -1,6 +1,6 @@
 image:
   repository: ahmedmasalem/devops-dummy-api
-  tag: "0.1.0"
+  tag: "6391e47f"
 
 replicaCount: 3
 
