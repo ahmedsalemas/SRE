@@ -1,5 +1,5 @@
 image:
-  repository: ahmedmasalem/devops-dummy-api
+  repository: host.docker.internal:8082/devops-dummy-api
   tag: "6391e47f"
 
 replicaCount: 3
@@ -18,7 +18,7 @@ hpa:
   targetCPUUtilizationPercentage: 50
 
 db:
-  host: "postgres-demo-service"
+  host: "host.docker.internal"
   port: "5432"
   name: "devops_app"
   user: "devops"
