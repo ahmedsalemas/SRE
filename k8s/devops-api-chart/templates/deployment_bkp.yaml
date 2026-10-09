@@ -1,0 +1,59 @@
+apiVersion: argoproj.io/v1alpha1     # was: apps/v1
+kind: Rollout                        # was: Deployment
+metadata:
+  name: devops-api
+spec:
+  replicas: {{ .Values.replicaCount }}
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: devops-api
+  strategy:                          # new block
+    canary:
+      steps:
+        - setWeight: 20              # send ~20% to the new version
+        - pause: {}                  # wait here until a human promotes
+        - setWeight: 60
+        - pause: {duration: 30s}     # then continue on its own
+  template:
+    metadata:
+      labels:
+        app: devops-api
+    spec:
+      imagePullSecrets:
+        - name: nexus-registry-secret
+      containers:
+        - name: api
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          ports:
+            - containerPort: 3000
+          envFrom:
+            - configMapRef:
+                name: devops-api-config
+          env:
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: devops-api-secret
+                  key: DB_PASSWORD
+          resources:
+            requests:
+              cpu: {{ .Values.resources.requests.cpu }}
+              memory: {{ .Values.resources.requests.memory }}
+            limits:
+              cpu: {{ .Values.resources.limits.cpu }}
+              memory: {{ .Values.resources.limits.memory }}
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            failureThreshold: 2
